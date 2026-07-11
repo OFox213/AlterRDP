@@ -50,7 +50,7 @@
     <Product></Product>
     <FileVersion>$(Version).$(VersionSuffix)</FileVersion>
     <InformationalVersion>$(Version).$(VersionSuffix)</InformationalVersion>
-    <AssemblyVersion>$(Version).$(VersionSuffix)</AssemblyVersion>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
     <AssemblyTitle>$(Title)</AssemblyTitle>
   </PropertyGroup>
 

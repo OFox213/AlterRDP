@@ -31,7 +31,7 @@ namespace AlterApp.Models
             return productVersion[(separatorIndex + 1)..];
         }
 
-        public static string ProjectWebsiteUri = "https://github.com/tksh164/alter-rdp-client";
+        public static string ProjectWebsiteUri = "https://github.com/OFox213/AlterRDP";
 
         public static string SettingFileTemplateResourceName = "AlterApp.Resources.setting.template";
         public static string SettingStoreFolderName = "AlterRDClient";
