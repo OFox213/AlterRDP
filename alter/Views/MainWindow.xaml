@@ -1,0 +1,240 @@
+<Window x:Class="AlterApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlterApp.Views"
+        xmlns:vm="clr-namespace:AlterApp.ViewModels"
+        xmlns:cv="clr-namespace:AlterApp.Converters"
+        xmlns:ap="clr-namespace:AlterApp.AttachedProperties"
+        xmlns:msrdcax="clr-namespace:MsRdcAx;assembly=msrdcax"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+        Title="{Binding WindowTitle, Mode=OneWay}" d:Title="Alter"
+        Width="{Binding WindowWidth, Mode=TwoWay}" Height="{Binding WindowHeight, Mode=TwoWay}" d:Width="1024" d:Height="768"
+        MinWidth="{Binding WindowMinWidth, Mode=OneTime}" MinHeight="{Binding WindowMinHeight, Mode=OneTime}"
+        WindowStartupLocation="CenterScreen"
+        FontSize="{StaticResource BaseFontSize}"
+        FocusManager.FocusedElement="{Binding ElementName=RemoteComputerTextBox, Mode=OneTime}"
+        Closing="Window_Closing"
+        ContentRendered="Window_ContentRendered"
+        StateChanged="Window_StateChanged">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/MainWindowDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <cv:RdpClientConnectionStateConverter x:Key="rdpClientConnectionStateConverter"/>
+            <cv:RdpClientDisconnectReasonConverter x:Key="rdpClientDisconnectReasonConverter"/>
+            <cv:RdpClientDisconnectReasonDetailsConverter x:Key="rdpClientDisconnectReasonDetailsConverter"/>
+            <cv:DisconnectReasonVisibilityConverter x:Key="disconnectReasonVisibilityConverter"/>
+            <cv:DisconnectReasonDetailsVisibilityConverter x:Key="disconnectReasonDetailsVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid ShowGridLines="False">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid IsEnabled="{Binding IsElementEnabled, Mode=OneWay}" Margin="0,24,0,24" ShowGridLines="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Margin="30,0,30,24" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           TextAlignment="Center" TextWrapping="Wrap" LineStackingStrategy="BlockLineHeight" TextTrimming="CharacterEllipsis"
+                           FontWeight="SemiBold" FontSize="28"
+                           Text="{Binding ConnectionTitle, Mode=OneWay}"/>
+
+                <Grid Grid.Row="1" Width="760" HorizontalAlignment="Center" VerticalAlignment="Center" ShowGridLines="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="76"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Source="{StaticResource SegoeFluentIcon_e977_PC1_Black}"/>
+                    <TextBox x:Name="RemoteComputerTextBox"
+                             Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="10" Padding="6,0,6,0" Margin="0,4,2,4"
+                             TabIndex="0" VerticalContentAlignment="Center"
+                             Style="{StaticResource RemoteComputerTextBoxStyle}"
+                             Tag="Remote host"
+                             Text="{Binding RemoteComputer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBox x:Name="RemotePortTextBox"
+                             Grid.Row="0" Grid.Column="11" Padding="6,0,6,0" Margin="0,4,0,4"
+                             TabIndex="1" VerticalContentAlignment="Center" MaxLength="5"
+                             Style="{StaticResource RemotePortTextBoxStyle}"
+                             Tag="Port"
+                             Text="{Binding RemotePort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Image Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Source="{StaticResource SegoeFluentIcon_e77b_Contact_Black}"/>
+                    <TextBox x:Name="UserNameTextBox"
+                             Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="11" Padding="6,0,6,0" Margin="0,4,0,4"
+                             TabIndex="2" VerticalContentAlignment="Center"
+                             Style="{StaticResource DefaultTextBoxStyle}"
+                             Tag="User name"
+                             Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Image Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Source="{StaticResource SegoeFluentIcon_e932_Label_Black}"/>
+                    <TextBox x:Name="ConnectionTitleTextBox"
+                             Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="11" Padding="6,0,6,0" Margin="0,4,0,4"
+                             TabIndex="3" VerticalContentAlignment="Center"
+                             Style="{StaticResource DefaultTextBoxStyle}"
+                             Tag="Title (optional)"
+                             Text="{Binding ConnectionTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="12" Margin="0,8,0,0" Style="{StaticResource OptionCardBorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource OptionSectionHeaderTextStyle}" Text="Display"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="4"
+                                          Content="Start in full-screen"
+                                          IsChecked="{Binding SessionOptions.StartInFullScreen, Mode=TwoWay}"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="5"
+                                          Content="Use all monitors for the session"
+                                          IsChecked="{Binding SessionOptions.UseMultiMon, Mode=TwoWay}"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="6"
+                                          Content="Scale the remote desktop to fit the window"
+                                          IsChecked="{Binding SessionOptions.UseSmartSizing, Mode=TwoWay}"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="7"
+                                          Content="Grab keyboard focus when the session connects"
+                                          IsChecked="{Binding SessionOptions.GrabFocusOnConnect, Mode=TwoWay}"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" Width="1" HorizontalAlignment="Center" Background="{StaticResource OptionSurface.Divider}"/>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource OptionSectionHeaderTextStyle}" Text="Input and session"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="8"
+                                          Content="Enable Windows key shortcuts in the remote session"
+                                          IsChecked="{Binding SessionOptions.EnableWindowsKey, Mode=TwoWay}"/>
+
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock FontWeight="SemiBold" Text="Keyboard handling"/>
+                                    <ComboBox Style="{StaticResource OptionComboBoxStyle}" TabIndex="9"
+                                              ItemsSource="{Binding KeyboardHookModeOptions, Mode=OneWay}"
+                                              DisplayMemberPath="DisplayName"
+                                              SelectedValuePath="Value"
+                                              SelectedValue="{Binding SessionOptions.KeyboardHookMode, Mode=TwoWay}"/>
+                                </StackPanel>
+
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="10"
+                                          Content="Show the full-screen connection bar"
+                                          IsChecked="{Binding SessionOptions.UseConnectionBar, Mode=TwoWay}"/>
+                                <CheckBox Style="{StaticResource OptionCheckBoxStyle}" TabIndex="11"
+                                          Content="Keep the connection bar pinned open"
+                                          IsEnabled="{Binding IsConnectionBarPinOptionEnabled, Mode=OneWay}"
+                                          IsChecked="{Binding SessionOptions.PinConnectionBar, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="12" Padding="0,10,0,10" Margin="0,16,0,0"
+                            Width="220" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            TabIndex="12" IsDefault="True"
+                            Style="{StaticResource DefaultButtonStyle}"
+                            Command="{Binding ConnectToRemoteComputerCommand, Mode=OneTime}"
+                            Content="Connect"/>
+                </Grid>
+
+                <ContentPresenter Grid.Row="2" Margin="0,18,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding}">
+                    <ContentPresenter.Resources>
+                        <DataTemplate x:Key="ConnectionStateOnly">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock TextAlignment="Center"
+                                           Text="{Binding RdpClientConnectionState, Mode=OneWay, Converter={StaticResource rdpClientConnectionStateConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <DataTemplate x:Key="ConnectionStateWithConnectingIndicator">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock TextAlignment="Center"
+                                           Text="{Binding RdpClientConnectionState, Mode=OneWay, Converter={StaticResource rdpClientConnectionStateConverter}}"/>
+                                <ProgressBar Margin="0,10,0,0" Width="160" Height="3"
+                                             IsIndeterminate="True"
+                                             Style="{StaticResource ConnectingIndicatorStyle}"/>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <DataTemplate x:Key="ConnectionStateWithDisconnectReason">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock TextAlignment="Center"
+                                           Text="{Binding RdpClientConnectionState, Mode=OneWay, Converter={StaticResource rdpClientConnectionStateConverter}}"/>
+                                <Border Padding="8,4,8,4" Margin="0,10,0,0" SnapsToDevicePixels="True"
+                                        Background="#fff8c5" BorderThickness="1" BorderBrush="#66d4a72c" CornerRadius="4">
+                                    <StackPanel>
+                                        <TextBlock Visibility="{Binding ShouldShowDisconnectReasonDetails, Mode=OneWay, Converter={StaticResource disconnectReasonVisibilityConverter}}"
+                                                   TextAlignment="Center"
+                                                   Text="{Binding RdpClientLastDisconnectReason, Mode=OneWay, Converter={StaticResource rdpClientDisconnectReasonConverter}}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleDisconnectReasonDetailsVisibilityCommand, Mode=OneTime}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                        <TextBlock Visibility="{Binding ShouldShowDisconnectReasonDetails, Mode=OneWay, Converter={StaticResource disconnectReasonDetailsVisibilityConverter}}"
+                                                   TextAlignment="Center"
+                                                   Text="{Binding RdpClientLastDisconnectReason, Mode=OneWay, Converter={StaticResource rdpClientDisconnectReasonDetailsConverter}}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleDisconnectReasonDetailsVisibilityCommand, Mode=OneTime}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentPresenter.Resources>
+                    <ContentPresenter.Style>
+                        <Style TargetType="{x:Type ContentPresenter}">
+                            <Setter Property="ContentTemplate" Value="{StaticResource ConnectionStateOnly}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RdpClientConnectionState, Mode=OneWay}" Value="{x:Static msrdcax:RdpClientConnectionState.EstablishingConnection}">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource ConnectionStateWithConnectingIndicator}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShouldShowDisconnectReason, Mode=OneWay}" Value="True">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource ConnectionStateWithDisconnectReason}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentPresenter.Style>
+                </ContentPresenter>
+
+                <TextBlock Grid.Row="3" Margin="16,20,16,0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Hyperlink x:Name="VersionInfoHyperLink" KeyboardNavigation.TabIndex="13" Command="{Binding OpenProjectWebsiteCommand, Mode=OneTime}">
+                        <Run Text="{Binding VersionInfoText, Mode=OneTime}"/>
+                    </Hyperlink>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
+
+        <ContentControl Visibility="{Binding RdpClientHostVisibility, Mode=OneWay}" Style="{StaticResource RdpClientHostContentControlStyle}"
+                        ap:SizeObservation.IsEnabled="True"
+                        ap:SizeObservation.ObservedActualWidth="{Binding RdpClientHostWidth, Mode=OneWayToSource}"
+                        ap:SizeObservation.ObservedActualHeight="{Binding RdpClientHostHeight, Mode=OneWayToSource}"
+                        Content="{Binding RdpClientHost, Mode=OneWay}"/>
+    </Grid>
+</Window>

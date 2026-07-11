@@ -1,0 +1,85 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows8.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+	<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AlterApp</RootNamespace>
+    <ApplicationManifest>Resources\app.manifest</ApplicationManifest>
+    <ApplicationIcon>Resources\alter.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <NoWarn>$(NoWarn)</NoWarn>
+	
+	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+
+    <!-- 네이티브 DLL도 EXE에 포함 -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+    <!-- PDB를 별도로 생성하지 않음 -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+
+    <!-- 선택 사항: 파일 크기 감소, 시작 시 압축 해제 비용 발생 -->
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet package -->
+    <Version>0.1</Version>
+    <Title>RDP Alter</Title>
+    <Description></Description>
+    <Authors></Authors>
+    <Copyright></Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <!-- Value definition for other properties -->
+    <VersionSuffix>$([System.DateTime]::UtcNow.ToString(MMdd))$([System.DateTime]::UtcNow.ToString(yy)[1])</VersionSuffix>
+
+    <!-- AssemblyInfo -->
+    <Company></Company>
+    <Product></Product>
+    <FileVersion>$(Version).$(VersionSuffix)</FileVersion>
+    <InformationalVersion>$(Version).$(VersionSuffix)</InformationalVersion>
+    <AssemblyVersion>$(Version).$(VersionSuffix)</AssemblyVersion>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\alter.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Costura.Fody" Version="6.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Fody" Version="6.9.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\msrdcax\msrdcax.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\setting.template" />
+    <EmbeddedResource Include="Resources\setting.template" />
+  </ItemGroup>
+
+</Project>
